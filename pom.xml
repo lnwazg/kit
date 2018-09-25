@@ -307,6 +307,15 @@
 			<version>2.9.0</version>
 			<optional>true</optional>
 		</dependency>
+
+		<!-- xmemcached依赖-->
+		<dependency>
+		    <groupId>com.googlecode.xmemcached</groupId>
+		    <artifactId>xmemcached</artifactId>
+		    <version>2.4.5</version>
+				<optional>true</optional>
+		</dependency>
+
 	</dependencies>
 	<build>
 		<resources>
