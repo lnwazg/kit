@@ -1,4 +1,4 @@
-package com.lnwazg.kit.redis;
+package com.lnwazg.kit.cache.redis;
 
 import java.util.Date;
 
@@ -36,8 +36,18 @@ public class RedisClient
     // 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的
     private static final boolean IS_TEST_ON_BORROW = true;
     
+    /**
+     * Redis服务器默认端口号
+     */
+    private static final int DEFAULT_PORT = 6379;
+    
     // 连接池实例
     private JedisPool jedisPool = null;
+    
+    public RedisClient(String address)
+    {
+        this(address, DEFAULT_PORT);
+    }
     
     public RedisClient(String address, int port)
     {
@@ -171,7 +181,8 @@ public class RedisClient
     
     public static void main(String[] args)
     {
-        RedisClient redisClient = new RedisClient("127.0.0.1", 6379, null);
+        RedisClient redisClient = new RedisClient("127.0.0.1");
+        
         System.out.println(redisClient.get("aaa"));
         System.out.println(redisClient.get("bbb"));
         

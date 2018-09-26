@@ -4,7 +4,7 @@ java精华工具类集锦：
 - anno 通用注解支持类
 - audio 音频播放器，例如播放mp3
 - bytes 字节工具类：字节数组转二进制、字节数组转十六进制、十六进制转字节数组、字节转换字符串
-- cache 缓存工具：内存型缓存、文件型缓存
+- cache 缓存工具：内存型缓存、文件型缓存、memcache缓存工具、redis缓存工具
 - charset 字符集工具，获取任意文本文件的字符编码
 - common.model 通用型RESTFUL接口返回对象
 - compress 字节压缩和解压缩工具
