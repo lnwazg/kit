@@ -260,7 +260,7 @@ public class Logs
             (TIMESTAMP_LOG_SWITCH ? " [" + DateUtils.getNowDateTimeStr() + "]" : ""),
             content == null ? "" : content.toString() + " ",
             e != null ? e.getMessage() : "");
-            
+        
         //消息格式如下：
         //[E] [2017-08-06 17:41:59] 手机号非法！
         
@@ -437,18 +437,4 @@ public class Logs
             ex.printStackTrace();
         }
     }
-    
-    //                        if (e != null)
-    //                        {
-    //                            //将错误堆栈打印到日志文件中
-    //                            PrintWriter p = new PrintWriter(new FileOutputStream(all, true));
-    //                            e.printStackTrace(p);
-    //                            p.flush();
-    //                            StreamUtils.close(p);
-    //                            
-    //                            p = new PrintWriter(new FileOutputStream(err, true));
-    //                            e.printStackTrace(p);
-    //                            p.flush();
-    //                            StreamUtils.close(p);
-    //                        }
 }

@@ -1,12 +1,13 @@
 package com.lnwazg.kit.date;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.lnwazg.kit.log.Logs;
@@ -18,6 +19,29 @@ import com.lnwazg.kit.log.Logs;
  */
 public class DateUtils
 {
+    private static Map<String, SimpleDateFormat> pattern2FormatMap = new HashMap<>();
+    
+    /**
+     * 从缓存中拿DateFormat
+     * @author nan.li
+     * @param pattern
+     * @return
+     */
+    private static SimpleDateFormat getDateFormatFromCache(String pattern)
+    {
+        SimpleDateFormat simpleDateFormat = null;
+        if (pattern2FormatMap.containsKey(pattern))
+        {
+            simpleDateFormat = pattern2FormatMap.get(pattern);
+        }
+        else
+        {
+            simpleDateFormat = new SimpleDateFormat(pattern);
+            pattern2FormatMap.put(pattern, simpleDateFormat);
+        }
+        return simpleDateFormat;
+    }
+    
     /**
      * 标准日期时间格式
      */
@@ -156,10 +180,10 @@ public class DateUtils
      */
     public static Date parseStr2DateTime(String paramString, String pattern)
     {
-        DateFormat dateFormat = new SimpleDateFormat(pattern);
+        SimpleDateFormat simpleDateFormat = getDateFormatFromCache(pattern);
         try
         {
-            Date date = dateFormat.parse(paramString);
+            Date date = simpleDateFormat.parse(paramString);
             return date;
         }
         catch (ParseException e)
@@ -227,7 +251,8 @@ public class DateUtils
      */
     public static String getFormattedDateTimeStr(String pattern, Date date)
     {
-        return new SimpleDateFormat(pattern).format(date);
+        SimpleDateFormat simpleDateFormat = getDateFormatFromCache(pattern);
+        return simpleDateFormat.format(date);
     }
     
     /**

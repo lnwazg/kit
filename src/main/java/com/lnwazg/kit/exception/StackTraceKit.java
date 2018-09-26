@@ -3,6 +3,8 @@ package com.lnwazg.kit.exception;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 
+import com.lnwazg.kit.io.StreamUtils;
+
 public class StackTraceKit
 {
     /**
@@ -16,7 +18,10 @@ public class StackTraceKit
         if (e != null)
         {
             StringWriter stringWriter = new StringWriter();
-            e.printStackTrace(new PrintWriter(stringWriter));
+            PrintWriter printWriter = new PrintWriter(stringWriter);
+            e.printStackTrace(printWriter);
+            printWriter.flush();
+            StreamUtils.close(printWriter);
             String stackTrace = stringWriter.toString();
             return stackTrace;
         }

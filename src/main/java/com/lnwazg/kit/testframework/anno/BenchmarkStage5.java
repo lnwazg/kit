@@ -6,14 +6,12 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 轻量级的benchmark测试，1K次循环<br>
- * 控制台输出很耗时严重影响性能对比，因此应该通过纯计算过程去进行对比才能有所发现<br>
- * 1,000次循环，一千次循环
+ * 渐进式增压，压力测试
  * @author nan.li
- * @version 2017年2月27日
+ * @version 2018年9月26日
  */
 @Target({ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BenchmarkLow
+public @interface BenchmarkStage5
 {
 }

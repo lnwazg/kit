@@ -2,6 +2,7 @@ package com.lnwazg.kit.testframework;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +14,16 @@ import com.lnwazg.kit.testframework.anno.Benchmark;
 import com.lnwazg.kit.testframework.anno.BenchmarkHigh;
 import com.lnwazg.kit.testframework.anno.BenchmarkLow;
 import com.lnwazg.kit.testframework.anno.BenchmarkMiddle;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage1;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage2;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage3;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage4;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage5;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage_;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage__;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage___;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage____;
+import com.lnwazg.kit.testframework.anno.BenchmarkStage_____;
 import com.lnwazg.kit.testframework.anno.PrepareEach;
 import com.lnwazg.kit.testframework.anno.PrepareStartOnce;
 import com.lnwazg.kit.testframework.anno.TestCase;
@@ -118,6 +129,33 @@ public class TestFramework
                         times = 1000 * 100 * 100;
                         System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
                     }
+                    //五档可调，压力测试
+                    //每一档都是上一档的十倍的量
+                    else if (method.isAnnotationPresent(BenchmarkStage_.class) || method.isAnnotationPresent(BenchmarkStage1.class))
+                    {
+                        times = 1000;
+                        System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
+                    }
+                    else if (method.isAnnotationPresent(BenchmarkStage__.class) || method.isAnnotationPresent(BenchmarkStage2.class))
+                    {
+                        times = 10000;
+                        System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
+                    }
+                    else if (method.isAnnotationPresent(BenchmarkStage___.class) || method.isAnnotationPresent(BenchmarkStage3.class))
+                    {
+                        times = 100000;
+                        System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
+                    }
+                    else if (method.isAnnotationPresent(BenchmarkStage____.class) || method.isAnnotationPresent(BenchmarkStage4.class))
+                    {
+                        times = 1000000;
+                        System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
+                    }
+                    else if (method.isAnnotationPresent(BenchmarkStage_____.class) || method.isAnnotationPresent(BenchmarkStage5.class))
+                    {
+                        times = 10000000;
+                        System.out.println(String.format("【准备开始benchmark，循环运行该方法  %s 次...】", times));
+                    }
                     else if (method.isAnnotationPresent(Benchmark.class))
                     {
                         //自定义次数
@@ -152,9 +190,12 @@ public class TestFramework
                         }
                     }
                     long costTime = stopWatch.getTime();
+                    
+                    //美化输出
+                    DecimalFormat df = new DecimalFormat("#,###");
                     System.out.println(String.format("【总计测试了 %s 次， 总计耗时 %s 毫秒，平均每次运行耗时 %s 毫秒，方法调用速度为 %.2f 次/秒 (TPS)】",
                         times,
-                        costTime,
+                        df.format(costTime),
                         costTime * 1.0D / times,
                         1000 / (costTime * 1.0D / times)));
                     System.out.println(String.format("<<<<<<<<<<<<<<<<<<<<<  %s 方法测试结束！   <<<<<<<<<<<<<<<<<<<<<<<\n", method.getName()));

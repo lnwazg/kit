@@ -6,7 +6,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * 自定义执行次数的性能测试
+ * 性能压测注解，标记该方法将被压力测试<br>
+ * 须指定压力测试的执行次数（方法被循环的次数）
  * @author nan.li
  * @version 2017年2月24日
  */
