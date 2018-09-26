@@ -4,7 +4,7 @@ import java.util.Date;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.lnwazg.kit.gson.GsonKit;
+import com.lnwazg.kit.cache.CacheClient;
 
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
@@ -16,7 +16,7 @@ import redis.clients.jedis.JedisPoolConfig;
  * @author nan.li
  * @version 2018年9月25日
  */
-public class RedisClient
+public class RedisClient implements CacheClient
 {
     // 连接 redis 等待时间
     private static final int CONNECT_TIMEOUT = 10000;
@@ -93,11 +93,7 @@ public class RedisClient
      */
     private Jedis getJedis()
     {
-        if (jedisPool != null)
-        {
-            return jedisPool.getResource();
-        }
-        return null;
+        return jedisPool.getResource();
     }
     
     /**
@@ -111,18 +107,6 @@ public class RedisClient
         Jedis jedis = getJedis();
         jedis.set(key, value);
         jedis.close();
-    }
-    
-    /**
-     * 将任意对象存入redis
-     * @author nan.li
-     * @param key
-     * @param t
-     */
-    public <T> void putObj(String key, T t)
-    {
-        String tStr = GsonKit.parseObject2String(t);
-        put(key, tStr);
     }
     
     /**
@@ -140,19 +124,6 @@ public class RedisClient
     }
     
     /**
-     * 将任意对象存入redis
-     * @author nan.li
-     * @param key
-     * @param t
-     * @param expireSeconds
-     */
-    public <T> void putObj(String key, T t, int expireSeconds)
-    {
-        String tStr = GsonKit.parseObject2String(t);
-        put(key, tStr, expireSeconds);
-    }
-    
-    /**
      * 根据key获取对应的值
      * @author nan.li
      * @param key
@@ -166,19 +137,6 @@ public class RedisClient
         return result;
     }
     
-    /**
-     * 根据key获取对应的值，并转换为对象
-     * @author nan.li
-     * @param key
-     * @param clazz
-     * @return
-     */
-    public <T> T getObj(String key, Class<T> clazz)
-    {
-        String tStr = get(key);
-        return GsonKit.parseString2Object(tStr, clazz);
-    }
-    
     public static void main(String[] args)
     {
         RedisClient redisClient = new RedisClient("127.0.0.1");
@@ -190,6 +148,6 @@ public class RedisClient
         System.out.println(redisClient.get("aaa"));
         
         redisClient.putObj("bbb", new Date(), 5);
-        System.out.println(redisClient.get("bbb"));
+        System.out.println(redisClient.getObj("bbb", Date.class));
     }
 }
