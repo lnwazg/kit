@@ -20,6 +20,7 @@ public abstract class PromptJob implements Job
     {
         Logs.i(String.format("调用JOB任务【%s】在：%s", getClass().getCanonicalName(), DateUtils.getNowDateTimeStr()));
         executeCustom(context);
+        Logs.i(String.format("JOB任务【%s】执行完毕！", getClass().getCanonicalName()));
     }
     
     /**

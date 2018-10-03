@@ -48,6 +48,20 @@ public class FrontObj
     }
     
     /**
+     * 新建对象
+     * @return
+     */
+    public static FrontObj create()
+    {
+        return new FrontObj();
+    }
+    
+    public static FrontObj newInstance()
+    {
+        return create();
+    }
+    
+    /**
      * 返回成功的对象
      * 
      * @author nan.li
