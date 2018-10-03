@@ -664,24 +664,38 @@ public class ClassKit
     }
     
     /**
-     * 获取该类的所有声明了的字段
-     * @author nan.li
+     * 获取所有字段列表<br>
+     * 默认父字段在前
      * @param entity
      * @return
      */
-    public static Field[] getAllDeclaredFields(Object entity)
+    public static Field[] getAllDeclaredFieldsDefault(Object entity)
     {
-        return getAllDeclaredFields(entity.getClass());
+        return getAllDeclaredFieldsParentClassFirst(entity);
     }
     
     /**
-     * 获取该类的所有声明了的字段
+     * 获取该类的所有声明了的字段<br>
+     * 父类字段在前，子类字段在后
      * @author nan.li
      * @param entity
      * @return
      */
-    public static Field[] getAllDeclaredFields(Class<?> clazz)
+    public static Field[] getAllDeclaredFieldsParentClassFirst(Object entity)
     {
+        return getAllDeclaredFieldsParentClassFirst(entity.getClass());
+    }
+    
+    /**
+     * 获取该类的所有声明了的字段<br>
+     * 父类字段在前，子类字段在后
+     * @author nan.li
+     * @param entity
+     * @return
+     */
+    public static Field[] getAllDeclaredFieldsParentClassFirst(Class<?> _clazz)
+    {
+        Class<?> clazz = _clazz;
         if (clazz == lastClass)
         {
             return lastFields;
@@ -710,6 +724,20 @@ public class ClassKit
     }
     
     /**
+     * 获取最顶层的父类
+     * @param tableClazz
+     * @return
+     */
+    public static Class<?> getTopParentClass(Class<?> _clazz)
+    {
+        Class<?> clazz = _clazz;
+        for (; clazz != Object.class; clazz = clazz.getSuperclass())
+        {
+        }
+        return clazz;
+    }
+    
+    /**
      * 上次访问的类
      */
     static Class<?> lastClass;
@@ -723,6 +751,39 @@ public class ClassKit
      * 类的所有字段（包括继承过来的）的缓存表
      */
     static Map<Class<?>, Field[]> classAllDeclaredFieldsMap = new HashMap<>();
+    
+    /**
+     * 获取该类的所有声明了的字段<br>
+     * 子类的字段优先显示
+     * @param entity
+     * @return
+     */
+    public static Field[] getAllDeclaredFieldsSubClassFirst(Object entity)
+    {
+        return getAllDeclaredFieldsSubClassFirst(entity.getClass());
+    }
+    
+    /**
+     * 获取该类的所有声明了的字段<br>
+     * 子类的字段优先显示
+     * @param clazz
+     * @return
+     */
+    public static Field[] getAllDeclaredFieldsSubClassFirst(Class<?> _clazz)
+    {
+        Class<?> clazz = _clazz;
+        Field[] fields = null;
+        List<Field> fieldsList = new LinkedList<>();
+        for (; clazz != Object.class; clazz = clazz.getSuperclass())
+        {
+            fields = clazz.getDeclaredFields();
+            //后来的添加到队尾
+            fieldsList.addAll(Lists.asList(fields));
+        }
+        //全部遍历完毕
+        fields = fieldsList.toArray(fields);
+        return fields;
+    }
     
     private static class NULL
     {
@@ -874,10 +935,10 @@ public class ClassKit
             {
                 if (actualTypes[i] == NULL.class)
                     continue;
-                    
+                
                 if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
                     continue;
-                    
+                
                 return false;
             }
             return true;
