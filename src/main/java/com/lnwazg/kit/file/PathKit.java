@@ -13,7 +13,6 @@ public class PathKit
     
     /**
      * 获取上下文路径<br>
-     * 例如:front_insurance
      * @author nan.li
      * @param req
      * @return
