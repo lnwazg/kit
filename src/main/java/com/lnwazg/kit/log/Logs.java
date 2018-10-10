@@ -429,7 +429,7 @@ public class Logs
             }
             
             //将日志信息写入文件
-            //TODO 可以优化为采用logback的方式写日志，这样的效率才会更高
+            //可以优化为采用logback的方式写日志，这样的效率才会更高
             FileUtils.write(logFile, logMessage + "\r\n", LOG_FILE_ENCODING, true);
             if (e != null)
             {
