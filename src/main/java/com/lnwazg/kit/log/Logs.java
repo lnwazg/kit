@@ -418,6 +418,8 @@ public class Logs
     {
         try
         {
+            //检查日志文件是否存在 
+            //若不存在，则新建一个
             String name = "logs" + File.separator + logFileName + ".log";
             File logFile = new File(name);
             if (!logFile.exists())
@@ -425,6 +427,9 @@ public class Logs
                 logFile.getParentFile().mkdirs();
                 logFile.createNewFile();
             }
+            
+            //将日志信息写入文件
+            //TODO 可以优化为采用logback的方式写日志，这样的效率才会更高
             FileUtils.write(logFile, logMessage + "\r\n", LOG_FILE_ENCODING, true);
             if (e != null)
             {
