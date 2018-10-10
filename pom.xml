@@ -293,12 +293,12 @@
 		</dependency>
 
 		<!-- slf4j日志 -->
-		<dependency>
+<!-- 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.25</version>
 			<optional>true</optional>
-		</dependency>
+		</dependency> -->
 
 		<!-- redis依赖 -->
 		<dependency>
@@ -315,7 +315,6 @@
 			<version>2.4.5</version>
 			<optional>true</optional>
 		</dependency>
-
 	</dependencies>
 	<build>
 		<resources>
