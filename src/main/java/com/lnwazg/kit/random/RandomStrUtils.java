@@ -4,10 +4,6 @@ import java.util.Random;
 
 /**
  * 随机字符串生成器
- * 
- * @author g00106664
- * @version C03 2009-7-23
- * @since OpenEye WIDGET_PLT V100R002C03
  */
 public final class RandomStrUtils
 {
