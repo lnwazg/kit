@@ -22,6 +22,7 @@ java精华工具类集锦：
 sqlite单线程写线程池、swing调度线程池、
 可运行定时任务的线程池、forkJoin运行池、启动一个后台线程工具、任务管理器
 - file 文件工具。检查配置目录、获取全平台配置目录、重复文件清理（文件夹内文件根据hash值去重）、从txt文件读取格式化数据
+- filepack 文件打包器&解包器。可将一系列文件打包压缩成一个单独的文件，支持5种内置的打包类型
 - freemarker Freemarker模板配置工具、Freemarker模板格式化输出工具
 - gson 强大的json与对象互转工具，json美化格式化输出
 - handlerseq 一个任务串行化（顺序）处理工具
