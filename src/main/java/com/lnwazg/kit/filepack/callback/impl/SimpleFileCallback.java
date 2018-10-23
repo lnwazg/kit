@@ -23,7 +23,7 @@ public abstract class SimpleFileCallback implements FileCallback
             {
                 //二进制类型
                 //只能打出文件名信息瞧瞧
-                handle(fileInfo, "[binary bytes]");
+                handle(fileInfo, "[binary bytes, register it if it's txt type]");
             }
         }
         catch (UnsupportedEncodingException e)
