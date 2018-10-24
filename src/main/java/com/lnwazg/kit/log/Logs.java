@@ -44,6 +44,11 @@ public class Logs
     public static boolean FILE_LOG_SWITCH = false;
     
     /**
+     * 是否启用Swing组件日志的开关（默认关闭，可提高应用整体的性能）
+     */
+    private static boolean SWING_LOG_SWITCH = false;
+    
+    /**
      * 日志文件的编码
      */
     private static final String LOG_FILE_ENCODING = CharEncoding.UTF_8;
@@ -340,71 +345,74 @@ public class Logs
         }
         
         //此处有性能瓶颈，因此做异步处理
-        ExecMgr.singleExec.execute(() -> {
-            //3.其他位置的输出
-            //准备颜色
-            Color localColor = Color.black;
-            switch (logLevel)
-            {
-                case LOG_LEVEL_DEBUG:
-                    localColor = new Color(255, 204, 153);//暗金色
-                    break;
-                case LOG_LEVEL_INFO:
-                    localColor = new Color(153, 204, 0);//翠绿
-                    break;
-                case LOG_LEVEL_WARN:
-                    localColor = Color.pink;//粉红
-                    break;
-                case LOG_LEVEL_ERROR:
-                    localColor = Color.red;//大红
-                    break;
-                case LOG_LEVEL_NONE:
-                    localColor = Color.green;//绿色
-                    break;
-            }
-            //开始输出
-            if (jTextAreaDests.size() > 0)
-            {
-                for (JTextArea jTextArea : jTextAreaDests)
+        if (SWING_LOG_SWITCH)
+        {
+            ExecMgr.singleExec.execute(() -> {
+                //3.其他位置的输出
+                //准备颜色
+                Color localColor = Color.black;
+                switch (logLevel)
                 {
-                    ExecMgr.guiExec.execute(() -> {
-                        if (jTextArea.getText().length() >= 10000)
-                        {
-                            jTextArea.setText("");
-                        }
-                        jTextArea.append(logMessage + "\r\n");
-                        jTextArea.setCaretPosition(jTextArea.getText().length());
-                    });
+                    case LOG_LEVEL_DEBUG:
+                        localColor = new Color(255, 204, 153);//暗金色
+                        break;
+                    case LOG_LEVEL_INFO:
+                        localColor = new Color(153, 204, 0);//翠绿
+                        break;
+                    case LOG_LEVEL_WARN:
+                        localColor = Color.pink;//粉红
+                        break;
+                    case LOG_LEVEL_ERROR:
+                        localColor = Color.red;//大红
+                        break;
+                    case LOG_LEVEL_NONE:
+                        localColor = Color.green;//绿色
+                        break;
                 }
-            }
-            if (jTextPaneDests.size() > 0)
-            {
-                for (JTextPane jTextPane : jTextPaneDests)
+                //开始输出
+                if (jTextAreaDests.size() > 0)
                 {
-                    final Color color = localColor;
-                    
-                    ExecMgr.guiExec.execute(() -> {
-                        Document document = jTextPane.getDocument();
-                        if (document.getLength() >= 10000)
-                        {
-                            //及时清空，防止日志容器爆掉
-                            jTextPane.setText(null);
-                        }
-                        try
-                        {
-                            SimpleAttributeSet attributeSet = new SimpleAttributeSet();
-                            StyleConstants.setForeground(attributeSet, color);
-                            document.insertString(document.getLength(), logMessage + "\r\n", attributeSet);
-                            jTextPane.setCaretPosition(jTextPane.getDocument().getLength());
-                        }
-                        catch (Exception e1)
-                        {
-                            e1.printStackTrace();
-                        }
-                    });
+                    for (JTextArea jTextArea : jTextAreaDests)
+                    {
+                        ExecMgr.guiExec.execute(() -> {
+                            if (jTextArea.getText().length() >= 10000)
+                            {
+                                jTextArea.setText("");
+                            }
+                            jTextArea.append(logMessage + "\r\n");
+                            jTextArea.setCaretPosition(jTextArea.getText().length());
+                        });
+                    }
                 }
-            }
-        });
+                if (jTextPaneDests.size() > 0)
+                {
+                    for (JTextPane jTextPane : jTextPaneDests)
+                    {
+                        final Color color = localColor;
+                        
+                        ExecMgr.guiExec.execute(() -> {
+                            Document document = jTextPane.getDocument();
+                            if (document.getLength() >= 10000)
+                            {
+                                //及时清空，防止日志容器爆掉
+                                jTextPane.setText(null);
+                            }
+                            try
+                            {
+                                SimpleAttributeSet attributeSet = new SimpleAttributeSet();
+                                StyleConstants.setForeground(attributeSet, color);
+                                document.insertString(document.getLength(), logMessage + "\r\n", attributeSet);
+                                jTextPane.setCaretPosition(jTextPane.getDocument().getLength());
+                            }
+                            catch (Exception e1)
+                            {
+                                e1.printStackTrace();
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
     
     /**

@@ -17,6 +17,11 @@ public class FilePackUtils
 {
     public static final String ENCODING = CharEncoding.UTF_8;
     
+    /**
+     * 文件类型标识字符串
+     */
+    public static final String FILE_TYPE_STRING = "FPK";
+    
     public static final String AES_KEY = PasswordKit.getAesKey("MyDaddyIsSuperMan!!!");
     
     /**

@@ -36,13 +36,13 @@ public class FilePack
         FilePackUtils.registerMoreTxtTypes("properties");
         
         String baseDir = "D:/";
-        String[] sourceFileNames = {"1.txt", "2.txt", "3.txt", "opt/log/app-ddp-fp-epcc-mdp/app-ddp-fp-epcc-mdp.log"};
+        String[] sourceFileNames = {"1.txt", "2.txt", "3.txt", "opt/log/test.log"};
         
         //打包类型：
         for (PackType packtype : PackType.values())
         {
             System.out.println("\nbegin to test packtype: " + packtype);
-            File targetFile = pack(baseDir, sourceFileNames, "D:/fp" + packtype.getType() + ".fp", packtype);
+            File targetFile = pack(baseDir, sourceFileNames, "D:/fp" + packtype.getType() + "." + FilePackUtils.FILE_TYPE_STRING.toLowerCase(), packtype);
             readPack(targetFile, new SimpleFileCallback()
             {
                 @Override
@@ -51,7 +51,6 @@ public class FilePack
                     System.out.println("文件名：" + fileInfo.getFileName() + " 读取到的文件内容为:" + fileContent);
                 }
             });
-            
             readPack(targetFile, new ExtractFileCallback("D:/extract" + packtype.getType() + "/"));
         }
     }
@@ -72,10 +71,22 @@ public class FilePack
             dataInputStream = new DataInputStream(fileInputStream);
             Logs.i("Begin to read pack file: " + targetFile.getCanonicalPath());
             
+            //read file type String
+            char[] chars = FilePackUtils.FILE_TYPE_STRING.toCharArray();
+            for (int i = 0; i < chars.length; i++)
+            {
+                byte c = dataInputStream.readByte();
+                if (c != chars[i])
+                {
+                    Logs.e("readPack() meet invalid file type!");
+                    return;
+                }
+            }
+            
             //读取文件类型的字节信息
-            byte ptByte = dataInputStream.readByte();
+            byte packTypeByte = dataInputStream.readByte();
             short memberCount;
-            PackType packType = PackType.of(ptByte);
+            PackType packType = PackType.of(packTypeByte);
             //文件类型匹配并处理
             switch (packType)
             {
@@ -233,6 +244,10 @@ public class FilePack
         {
             fileOutputStream = new FileOutputStream(targetFile);
             dataOutputStream = new DataOutputStream(fileOutputStream);
+            
+            //write file type String
+            dataOutputStream.writeBytes(FilePackUtils.FILE_TYPE_STRING);
+            
             //先输出一份文件类型的字节数据
             dataOutputStream.writeByte(packType.getType());
             
