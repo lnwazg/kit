@@ -92,10 +92,12 @@ public class Logs
         if ((dest instanceof JTextPane))
         {
             jTextPaneDests.add((JTextPane)dest);
+            SWING_LOG_SWITCH = true;//自适应开启swing日志输出开关
         }
         else if ((dest instanceof JTextArea))
         {
             jTextAreaDests.add((JTextArea)dest);
+            SWING_LOG_SWITCH = true;//自适应开启swing日志输出开关
         }
         else
         {
