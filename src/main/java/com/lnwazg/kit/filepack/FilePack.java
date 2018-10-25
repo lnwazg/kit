@@ -16,7 +16,6 @@ import com.lnwazg.kit.compress.GzipBytesUtils;
 import com.lnwazg.kit.datastructure.Pair;
 import com.lnwazg.kit.filepack.callback.FileCallback;
 import com.lnwazg.kit.filepack.callback.impl.ExtractFileCallback;
-import com.lnwazg.kit.filepack.callback.impl.SimpleFileCallback;
 import com.lnwazg.kit.gson.GsonKit;
 import com.lnwazg.kit.io.StreamUtils;
 import com.lnwazg.kit.log.Logs;
@@ -33,26 +32,33 @@ public class FilePack
 {
     public static void main(String[] args)
     {
-        FilePackUtils.registerMoreTxtTypes("properties");
+        //        FilePackUtils.registerMoreTxtTypes("properties");
+        //        
+        //        String baseDir = "D:/cert";
+        //        String[] sourceFileNames = {"1.txt", "2.txt", "3.txt", "opt/log/test.log"};
+        //        
+        //        //打包类型：
+        //        for (PackType packtype : PackType.values())
+        //        {
+        //            System.out.println("\nbegin to test packtype: " + packtype);
+        //            // File targetFile = pack(baseDir, sourceFileNames, "D:/fp" + packtype.getType() + "." + FilePackUtils.FILE_TYPE_STRING.toLowerCase(), packtype);
+        //            
+        //            File targetFile = packAll(baseDir, "D:/fp" + packtype.getType() + "." + FilePackUtils.FILE_TYPE_STRING.toLowerCase(), packtype);
+        //            
+        //            unPack(targetFile, new SimpleFileCallback()
+        //            {
+        //                @Override
+        //                public void handle(FileInfo fileInfo, String fileContent)
+        //                {
+        //                    System.out.println("文件名：" + fileInfo.getFileName() + " 读取到的文件内容为:" + fileContent);
+        //                }
+        //            });
+        //            
+        //            unPack(targetFile, new ExtractFileCallback("D:/extract" + packtype.getType() + "/"));
+        //        }
         
-        String baseDir = "D:/";
-        String[] sourceFileNames = {"1.txt", "2.txt", "3.txt", "opt/log/test.log"};
-        
-        //打包类型：
-        for (PackType packtype : PackType.values())
-        {
-            System.out.println("\nbegin to test packtype: " + packtype);
-            File targetFile = pack(baseDir, sourceFileNames, "D:/fp" + packtype.getType() + "." + FilePackUtils.FILE_TYPE_STRING.toLowerCase(), packtype);
-            readPack(targetFile, new SimpleFileCallback()
-            {
-                @Override
-                public void handle(FileInfo fileInfo, String fileContent)
-                {
-                    System.out.println("文件名：" + fileInfo.getFileName() + " 读取到的文件内容为:" + fileContent);
-                }
-            });
-            readPack(targetFile, new ExtractFileCallback("D:/extract" + packtype.getType() + "/"));
-        }
+        File targetFile = packAll("D:/DistributedClients", "D:/DistributedClients.fpk");
+        unPack(targetFile, new ExtractFileCallback("D:/extractDistributedClients/"));
     }
     
     /**
@@ -61,7 +67,7 @@ public class FilePack
      * @param targetFile
      * @param fileCallback
      */
-    public static void readPack(File targetFile, FileCallback fileCallback)
+    public static void unPack(File targetFile, FileCallback fileCallback)
     {
         FileInputStream fileInputStream = null;
         DataInputStream dataInputStream = null;
@@ -229,6 +235,53 @@ public class FilePack
     }
     
     /**
+     * 打包某个文件夹下的所有文件到一个指定文件中
+     * @author nan.li
+     * @param baseDir
+     * @param targetFileName
+     * @return
+     */
+    public static File packAll(String baseDir, String targetFileName)
+    {
+        return packAll(baseDir, targetFileName, PackType.IntJsonCompressEncryptByte);
+    }
+    
+    /**
+     * 打包某个文件夹下的所有文件到一个指定文件中
+     * @author nan.li
+     * @param baseDir
+     * @param targetFileName
+     * @param packType
+     * @return
+     */
+    public static File packAll(String baseDir, String targetFileName, PackType packType)
+    {
+        List<String> sourceFileNamesList = new ArrayList<String>();
+        String[] sourceFileNames = getBaseDirAllFileNames(sourceFileNamesList, baseDir, baseDir);
+        return pack(baseDir, sourceFileNames, targetFileName, packType);
+    }
+    
+    private static String[] getBaseDirAllFileNames(List<String> sourceFileNamesList, String baseDir, String rootDir)
+    {
+        File baseDirFile = new File(baseDir);
+        for (File currentFile : baseDirFile.listFiles())
+        {
+            if (currentFile.isDirectory())
+            {
+                getBaseDirAllFileNames(sourceFileNamesList, currentFile.getPath(), rootDir);
+            }
+            else
+            {
+                String currentFullPath = currentFile.getPath();
+                String rootFullPath = new File(rootDir).getPath();
+                String relativeName = currentFullPath.substring(rootFullPath.length() + 1, currentFullPath.length());
+                sourceFileNamesList.add(relativeName);
+            }
+        }
+        return sourceFileNamesList.toArray(new String[sourceFileNamesList.size()]);
+    }
+    
+    /**
      * 文件打包器，将一系列文件打包成一个单独的文件
      * @author nan.li
      * @param sourceFileNames
@@ -237,6 +290,7 @@ public class FilePack
      */
     public static File pack(String baseDir, String[] sourceFileNames, String targetFileName, PackType packType)
     {
+        Logs.i("Start packing...");
         File targetFile = new File(targetFileName);
         FileOutputStream fileOutputStream = null;
         DataOutputStream dataOutputStream = null;

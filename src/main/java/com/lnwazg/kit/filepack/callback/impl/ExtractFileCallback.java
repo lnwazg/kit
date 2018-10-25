@@ -38,19 +38,14 @@ public class ExtractFileCallback implements FileCallback
         {
             fileInfo.build();
             String fileName = fileInfo.getFileName();
-            
-            if (StringUtils.isNotEmpty(fileName))
-            {
-                fileName = fileName.substring(fileName.lastIndexOf(File.separator) + 1, fileName.length());
-            }
-            else
+            if (StringUtils.isEmpty(fileName))
             {
                 fileName = fileInfo.getExtractFileIndex() + "";
             }
-            
+            Logs.i("baseDir=" + baseDir + " fileName=" + fileName);
             File extractFile = new File(baseDir, fileName);
-            extractFile.getParentFile().mkdirs();
             
+            extractFile.getParentFile().mkdirs();
             Logs.i("解压文件到路径：" + extractFile.getCanonicalPath());
             fileOutputStream = new FileOutputStream(extractFile);
             IOUtils.write(fileInfo.getFileContentBytes(), fileOutputStream);
