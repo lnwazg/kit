@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.io.IOUtils;
@@ -21,6 +22,7 @@ import com.lnwazg.kit.io.StreamUtils;
 import com.lnwazg.kit.log.Logs;
 import com.lnwazg.kit.reflect.TypeReference;
 import com.lnwazg.kit.security.SecurityUtils;
+import com.lnwazg.kit.stopwatch.StopWatchX;
 
 /**
  * 文件打包器与解码器<br>
@@ -56,8 +58,8 @@ public class FilePack
         //            
         //            unPack(targetFile, new ExtractFileCallback("D:/extract" + packtype.getType() + "/"));
         //        }
-        
-        File targetFile = packAll("D:/DistributedClients", "D:/DistributedClients.fpk");
+        Logs.TIMESTAMP_LOG_SWITCH = true;
+        File targetFile = packAll("D:/DistributedClients", "D:/DistributedClients.fpk", PackType.IntJsonCompressEncryptByte);
         unPack(targetFile, new ExtractFileCallback("D:/extractDistributedClients/"));
     }
     
@@ -291,6 +293,8 @@ public class FilePack
     public static File pack(String baseDir, String[] sourceFileNames, String targetFileName, PackType packType)
     {
         Logs.i("Start packing...");
+        StopWatchX stopWatchX = new StopWatchX();
+        stopWatchX.start();
         File targetFile = new File(targetFileName);
         FileOutputStream fileOutputStream = null;
         DataOutputStream dataOutputStream = null;
@@ -367,8 +371,10 @@ public class FilePack
                     byte[] dataFileAllBytes = null;
                     
                     List<PackUnit> packUnits = new ArrayList<>();
+                    Logs.i("Pack element total size=" + sourceFileNames.length);
                     for (int i = 0; i < sourceFileNames.length; i++)
                     {
+                        Logs.i("begin to pack element[" + i + "]...");
                         PackUnit packUnit = new PackUnit();
                         
                         File dataFile = new File(baseDir, sourceFileNames[i]);
@@ -388,11 +394,13 @@ public class FilePack
                     }
                     //serialize to String
                     
+                    Logs.i("Pack json head...");
                     String json = GsonKit.parseObject2String(packUnits);
                     jsonBytes = json.getBytes(FilePackUtils.ENCODING);
                     jsonBytes = GzipBytesUtils.zip(jsonBytes);//做一次gzip压缩，避免明文化
                     jsonBytesSize = jsonBytes.length;
                     
+                    Logs.i("Pack data body...");
                     if (packType == PackType.IntJsonCompressByte)
                     {
                         dataFileAllBytes = GzipBytesUtils.zip(dataFileAllBytes);
@@ -402,6 +410,7 @@ public class FilePack
                         dataFileAllBytes = GzipBytesUtils.zip(dataFileAllBytes);
                         dataFileAllBytes = SecurityUtils.aesEncode(dataFileAllBytes, FilePackUtils.AES_KEY);
                     }
+                    Logs.i("Pack data complete...");
                     
                     dataFileAllBytesSize = dataFileAllBytes.length;
                     
@@ -413,7 +422,7 @@ public class FilePack
                 default:
                     break;
             }
-            Logs.i("Pack OK!");
+            Logs.i("Pack OK! Cost " + (stopWatchX.getTime() / 1000D) + "s");
         }
         catch (FileNotFoundException e)
         {
@@ -433,27 +442,21 @@ public class FilePack
     /**
      * 字节追加
      * @author nan.li
-     * @param base
-     * @param appendBytes
+     * @param baseBytes
+     * @param toBeAddedBytes
      */
-    private static byte[] appendBytes(byte[] base, byte[] appendBytes)
+    private static byte[] appendBytes(byte[] baseBytes, byte[] toBeAddedBytes)
     {
         byte[] result = null;
-        if (base == null)
+        if (baseBytes == null)
         {
-            result = appendBytes;
+            result = toBeAddedBytes;
         }
         else
         {
-            result = new byte[base.length + appendBytes.length];
-            for (int i = 0; i < base.length; i++)
-            {
-                result[i] = base[i];
-            }
-            for (int i = 0; i < appendBytes.length; i++)
-            {
-                result[i + base.length] = appendBytes[i];
-            }
+            //数组扩容的便捷方法
+            result = Arrays.copyOf(baseBytes, baseBytes.length + toBeAddedBytes.length);
+            System.arraycopy(toBeAddedBytes, 0, result, baseBytes.length, toBeAddedBytes.length);
         }
         return result;
     }
