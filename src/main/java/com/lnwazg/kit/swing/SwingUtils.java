@@ -19,6 +19,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 
 import com.lnwazg.kit.executor.ExecMgr;
+import com.lnwazg.kit.log.Logs;
 
 /**
  * 基础工具类
@@ -49,7 +50,7 @@ public class SwingUtils
      */
     public static void showEnv()
     {
-        System.out.println(String.format("java.library.path的路径为：\n%s", System.getProperty("java.library.path")));
+        Logs.i(String.format("java.library.path的路径为：\n%s", System.getProperty("java.library.path")));
     }
     
     /**
