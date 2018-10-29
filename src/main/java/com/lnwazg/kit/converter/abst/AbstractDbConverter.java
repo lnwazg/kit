@@ -91,4 +91,11 @@ public abstract class AbstractDbConverter implements DbConvertAware
     {
         return convert2ValueConverter(key).getAsShort();
     }
+    
+    @Override
+    public <T> T getAs(String key, Class<T> clazz)
+        throws SQLException
+    {
+        return convert2ValueConverter(key).getAs(clazz);
+    }
 }

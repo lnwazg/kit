@@ -88,4 +88,14 @@ public interface DbConvertAware
      */
     short getAsShort(String key)
         throws SQLException;
+        
+    /**
+     * 以某种Class的方式获取某个key
+     * @author nan.li
+     * @param key
+     * @param clazz
+     * @return
+     */
+    <T> T getAs(String key, Class<T> clazz)
+        throws SQLException;
 }

@@ -1,6 +1,10 @@
 package com.lnwazg.kit.converter;
 
+import java.lang.reflect.Type;
+
 import org.apache.commons.lang.ObjectUtils;
+
+import com.lnwazg.kit.gson.GsonKit;
 
 /**
  * 对象值转换器<br>
@@ -123,5 +127,37 @@ public class ValueConverter
     public short shortValue()
     {
         return getAsShort();
+    }
+    
+    public <T> T getAs(Class<T> clazz)
+    {
+        String value = get();
+        return GsonKit.parseString2Object(value, clazz);
+    }
+    
+    public <T> T getAsClass(Class<T> clazz)
+    {
+        return getAs(clazz);
+    }
+    
+    public <T> T classValue(Class<T> clazz)
+    {
+        return getAs(clazz);
+    }
+    
+    public <T> T getAs(Type type)
+    {
+        String value = get();
+        return GsonKit.parseString2Object(value, type);
+    }
+    
+    public <T> T getAsType(Type type)
+    {
+        return getAs(type);
+    }
+    
+    public <T> T typeValue(Type type)
+    {
+        return getAs(type);
     }
 }
