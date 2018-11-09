@@ -53,7 +53,7 @@ public class PasswordKit
             // local_policy.jar
             // US_export_policy.jar
         }
-        Logs.i(String.format("当前的通讯密码为：%s", PASSWORD));
+        //        Logs.i(String.format("当前的通讯密码为：%s", PASSWORD));
     }
     
     /**
@@ -81,5 +81,27 @@ public class PasswordKit
             }
         }
         return null;
+    }
+    
+    /**
+     * 根据SALT生成Password
+     * @author nan.li
+     * @param salt
+     * @return
+     */
+    public static String getAesKey(String salt)
+    {
+        String resultPwd = null;
+        if (StringUtils.isNotEmpty(salt))
+        {
+            resultPwd = SecurityUtils.md5Encode(DEFAULT_TRANSFER_PASSWORD + salt).substring(0, 23);
+        }
+        else
+        {
+            //salt is empty, get default password.
+            resultPwd = SecurityUtils.md5Encode(DEFAULT_TRANSFER_PASSWORD).substring(0, 23);
+        }
+        resultPwd = SecurityUtils.md5Encode(resultPwd).substring(0, 16);  //结果长度必须是16位，所以做一次截取
+        return resultPwd;
     }
 }

@@ -4,15 +4,14 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
 
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream;
-import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.lnwazg.kit.io.StreamUtils;
 
 /**
  * gzip字节压缩以及解压缩工具类
@@ -32,11 +31,15 @@ public class GzipBytesUtils
     public static byte[] unzip(byte[] gzipBytes)
     {
         byte[] result = null;
+        ByteArrayInputStream bai = null;
+        BufferedInputStream bi = null;
         GzipCompressorInputStream zis = null;
         ByteArrayOutputStream bos = null;
         try
         {
-            zis = new GzipCompressorInputStream(new BufferedInputStream(new ByteArrayInputStream(gzipBytes)));
+            bai = new ByteArrayInputStream(gzipBytes);
+            bi = new BufferedInputStream(bai);
+            zis = new GzipCompressorInputStream(bi);
             bos = new ByteArrayOutputStream();
             IOUtils.copy(zis, bos);
             bos.close();
@@ -48,8 +51,7 @@ public class GzipBytesUtils
         }
         finally
         {
-            IOUtils.closeQuietly(bos);
-            IOUtils.closeQuietly(zis);
+            StreamUtils.close(zis, bi, bai);
         }
         return result;
     }
@@ -63,12 +65,14 @@ public class GzipBytesUtils
     public static byte[] zip(byte[] bytes)
     {
         byte[] result = null;
+        BufferedOutputStream bo = null;
         GzipCompressorOutputStream zos = null;
         ByteArrayOutputStream bos = null;
         try
         {
             bos = new ByteArrayOutputStream();
-            zos = new GzipCompressorOutputStream(new BufferedOutputStream(bos));
+            bo = new BufferedOutputStream(bos);
+            zos = new GzipCompressorOutputStream(bo);
             IOUtils.write(bytes, zos);
             zos.close();
             result = bos.toByteArray();
@@ -79,39 +83,8 @@ public class GzipBytesUtils
         }
         finally
         {
-            IOUtils.closeQuietly(zos);
-            IOUtils.closeQuietly(bos);
+            StreamUtils.close(bo, bos);
         }
         return result;
-    }
-    
-    public static void main(String[] args)
-        throws IOException
-    {
-        //        File file = new File("c:\\111.gif");
-        //        File fileTo = new File("c:\\111.gif.gz");
-        //        File fileUnzip = new File("c:\\222.gif");
-        //        
-        //        //file->zip
-        //        byte[] original = FileUtils.readFileToByteArray(file);
-        //        byte[] zipped = zip(original);
-        //        FileUtils.writeByteArrayToFile(fileTo, zipped);
-        //        
-        //        //zip->file
-        //        byte[] unzipped = unzip(zipped);
-        //        FileUtils.writeByteArrayToFile(fileUnzip, unzipped);
-        
-        File file = new File("c:\\1.pdf");
-        File fileTo = new File("c:\\1.pdf.gz");
-        File fileUnzip = new File("c:\\2.pdf");
-        
-        //file->zip
-        byte[] original = FileUtils.readFileToByteArray(file);
-        byte[] zipped = zip(original);
-        FileUtils.writeByteArrayToFile(fileTo, zipped);
-        
-        //zip->file
-        byte[] unzipped = unzip(zipped);
-        FileUtils.writeByteArrayToFile(fileUnzip, unzipped);
     }
 }

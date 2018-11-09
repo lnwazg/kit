@@ -724,15 +724,16 @@ public class ClassKit
     }
     
     /**
-     * 获取最顶层的父类
+     * 获取最顶层的父类，不包含Object.class
      * @param tableClazz
      * @return
      */
     public static Class<?> getTopParentClass(Class<?> _clazz)
     {
         Class<?> clazz = _clazz;
-        for (; clazz != Object.class; clazz = clazz.getSuperclass())
+        while (clazz.getSuperclass() != Object.class)
         {
+            clazz = clazz.getSuperclass();
         }
         return clazz;
     }
@@ -935,10 +936,10 @@ public class ClassKit
             {
                 if (actualTypes[i] == NULL.class)
                     continue;
-                
+                    
                 if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
                     continue;
-                
+                    
                 return false;
             }
             return true;

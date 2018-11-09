@@ -25,13 +25,13 @@ public class ImageUtil
         
         System.out.println(
             getAutoZoomHeightByWidth("http://oimagea6.ydstatic.com/image?url=http://en.wikipedia.org/wiki/File:WhiteCat.jpg&product=PICDICT_EDIT", 120));
-            
+        
         System.out.println(
             getAutoZoomHeightByWidth("http://oimagea6.ydstatic.com/image?url=http://en.wikipedia.org/wiki/File:WhiteCat.jpg&product=PICDICT_EDIT", 200));
-            
+        
         System.out.println(
             getAutoZoomWidthByHeight("http://oimagea6.ydstatic.com/image?url=http://en.wikipedia.org/wiki/File:WhiteCat.jpg&product=PICDICT_EDIT", 80));
-            
+        
         System.out.println(
             getAutoZoonImageHtmlByWidth("http://oimagea6.ydstatic.com/image?url=http://en.wikipedia.org/wiki/File:WhiteCat.jpg&product=PICDICT_EDIT", 120));
         System.out.println(getAutoZoonImageHtmlByWidth(
@@ -113,7 +113,7 @@ public class ImageUtil
             if (w >= h)
             {
                 //宽度较大,以宽度作为基准来自动缩放
-                ret = String.format("<p align=\"left\"><img width=\"%s\" height=\"%s\" border=\"%s\" src=\"%s\"></p>",
+                ret = String.format("<p align=\"center\"><img width=\"%s\" height=\"%s\" border=\"%s\" src=\"%s\"></p>",
                     imageMaxDimen,
                     (int)(h * imageMaxDimen / w),
                     border,
@@ -122,7 +122,7 @@ public class ImageUtil
             else
             {
                 //高度较大
-                ret = String.format("<p align=\"left\"><img width=\"%s\" height=\"%s\" border=\"%s\" src=\"%s\"></p>",
+                ret = String.format("<p align=\"center\"><img width=\"%s\" height=\"%s\" border=\"%s\" src=\"%s\"></p>",
                     (int)(w * imageMaxDimen / h),
                     imageMaxDimen,
                     border,

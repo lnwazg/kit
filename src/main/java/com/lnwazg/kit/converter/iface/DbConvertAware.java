@@ -10,15 +10,22 @@ import java.sql.SQLException;
 public interface DbConvertAware
 {
     /**
+     * 获取这个key的原始值
+     * @author nan.li
+     * @param key
+     * @return
+     */
+    String get(String key);
+    
+    /**
      * 以String的方式获取某个key
      * @author nan.li
      * @param key
      * @return
      * @throws SQLException 
      */
-    String getAsString(String key)
-        throws SQLException;
-        
+    String getAsString(String key);
+    
     /**
      * 以boolean的方式获取某个key
      * @author nan.li
@@ -26,9 +33,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    boolean getAsBoolean(String key)
-        throws SQLException;
-        
+    boolean getAsBoolean(String key);
+    
     /**
      * 以double的方式获取某个key
      * @author nan.li
@@ -36,9 +42,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    double getAsDouble(String key)
-        throws SQLException;
-        
+    double getAsDouble(String key);
+    
     /**
      * 以float的方式获取某个key
      * @author nan.li
@@ -46,9 +51,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    float getAsFloat(String key)
-        throws SQLException;
-        
+    float getAsFloat(String key);
+    
     /**
      * 以long的方式获取某个key
      * @author nan.li
@@ -56,9 +60,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    long getAsLong(String key)
-        throws SQLException;
-        
+    long getAsLong(String key);
+    
     /**
      * 以int的方式获取某个key
      * @author nan.li
@@ -66,9 +69,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    int getAsInt(String key)
-        throws SQLException;
-        
+    int getAsInt(String key);
+    
     /**
      * 以byte的方式获取某个key
      * @author nan.li
@@ -76,9 +78,8 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    byte getAsByte(String key)
-        throws SQLException;
-        
+    byte getAsByte(String key);
+    
     /**
      * 以short的方式获取某个key
      * @author nan.li
@@ -86,6 +87,14 @@ public interface DbConvertAware
      * @return
      * @throws SQLException 
      */
-    short getAsShort(String key)
-        throws SQLException;
+    short getAsShort(String key);
+    
+    /**
+     * 以某种Class的方式获取某个key
+     * @author nan.li
+     * @param key
+     * @param clazz
+     * @return
+     */
+    <T> T getAs(String key, Class<T> clazz);
 }
