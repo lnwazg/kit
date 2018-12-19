@@ -1,4 +1,4 @@
-package com.lnwazg.kit.proxy;
+package com.lnwazg.kit.proxy.type.cglib;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;

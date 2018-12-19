@@ -937,10 +937,10 @@ public class ClassKit
             {
                 if (actualTypes[i] == NULL.class)
                     continue;
-                    
+                
                 if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
                     continue;
-                    
+                
                 return false;
             }
             return true;
@@ -1227,8 +1227,13 @@ public class ClassKit
         return true;
     }
     
+    public static Method getUniqueDeclaredMethod(Class<?> clazz, String methodName)
+    {
+        return guessUniqueDeclaredMethod(clazz, methodName);
+    }
+    
     /**
-     * 猜唯一方法<br>
+     * 猜唯一方法（包含私有方法）<br>
      * 之所以称为“猜唯一方法”，是在你对这个类的方法除了方法名你知道之外、方法的参数类型和返回值类型均一无所知的情况下，获取这个类的唯一方法的最后一招<br>
      * 调用此方法的clazz不能重载方法，否则会出现方法匹配错误的问题！
      * @author nan.li
@@ -1236,13 +1241,44 @@ public class ClassKit
      * @param methodName
      * @return
      */
-    public Method guessUniqueMethod(Class<?> clazz, String methodName)
+    public static Method guessUniqueDeclaredMethod(Class<?> clazz, String methodName)
     {
         if (clazz == null || StringUtils.isEmpty(methodName))
         {
             return null;
         }
         Method[] methods = clazz.getDeclaredMethods();
+        for (Method method : methods)
+        {
+            if (method.getName().equals(methodName))
+            {
+                return method;
+            }
+        }
+        return null;
+    }
+    
+    public static Method getUniquePublicMethod(Class<?> clazz, String methodName)
+    {
+        return guessUniquePublicMethod(clazz, methodName);
+    }
+    
+    /**
+     * 猜唯一的公有方法（接口、类等公开发布出去的方法，不包含私有方法）<br>
+     * 之所以称为“猜唯一方法”，是在你对这个类的方法除了方法名你知道之外、方法的参数类型和返回值类型均一无所知的情况下，获取这个类的唯一方法的最后一招<br>
+     * 调用此方法的clazz不能重载方法，否则会出现方法匹配错误的问题！
+     * @author nan.li
+     * @param clazz
+     * @param methodName
+     * @return
+     */
+    public static Method guessUniquePublicMethod(Class<?> clazz, String methodName)
+    {
+        if (clazz == null || StringUtils.isEmpty(methodName))
+        {
+            return null;
+        }
+        Method[] methods = clazz.getMethods();
         for (Method method : methods)
         {
             if (method.getName().equals(methodName))
