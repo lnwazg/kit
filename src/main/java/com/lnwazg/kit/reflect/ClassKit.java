@@ -301,7 +301,7 @@ public class ClassKit
     public static Collection<String> getFields(Class<?> entity)
     {
         Collection<String> ret = new ArrayList<>();
-        Field[] fields = entity.getDeclaredFields();
+        Field[] fields = getAllDeclaredFieldsDefault(entity);
         for (Field field : fields)
         {
             ret.add(field.getName());
@@ -328,13 +328,10 @@ public class ClassKit
             {
                 try
                 {
-                    Field field = entityClass.getDeclaredField(fieldName);
+                    //                    Field field = entityClass.getDeclaredField(fieldName);
+                    Field field = getField(entityClass, fieldName);
                     field.setAccessible(true);
                     values.add(field.get(entity));
-                }
-                catch (NoSuchFieldException e)
-                {
-                    e.printStackTrace();
                 }
                 catch (SecurityException e)
                 {
@@ -415,6 +412,30 @@ public class ClassKit
         return null;
     }
     
+    private static Field getFieldFromCache(Class<?> clazz, String fieldName)
+    {
+        lastFieldTripleNeedOverride = true;
+        if (clazz == null)
+        {
+            return null;
+        }
+        if (lastFieldTriple != null && clazz == lastFieldTriple.getLeft() && fieldName.equals(lastFieldTriple.getMiddle()))
+        {
+            if (lastFieldTriple.getRight() != null)
+            {
+                //既然和上次的相同，那么就没必要刷新了
+                lastFieldTripleNeedOverride = false;
+                return lastFieldTriple.getRight();
+            }
+        }
+        Map<String, Field> nameFieldMap = fieldMap.get(clazz);
+        if (nameFieldMap != null)
+        {
+            return nameFieldMap.get(fieldName);
+        }
+        return null;
+    }
+    
     /**
      * 将Field对象设置到缓存中
      * @author nan.li
@@ -435,6 +456,21 @@ public class ClassKit
         }
         nameFieldMap.put(fieldName, foundField);
         fieldMap.put(object.getClass(), nameFieldMap);
+    }
+    
+    private static void setFieldToCache(Class<?> clazz, String fieldName, Field foundField)
+    {
+        if (clazz == null)
+        {
+            return;
+        }
+        Map<String, Field> nameFieldMap = fieldMap.get(clazz);
+        if (nameFieldMap == null)
+        {
+            nameFieldMap = new HashMap<>();
+        }
+        nameFieldMap.put(fieldName, foundField);
+        fieldMap.put(clazz, nameFieldMap);
     }
     
     /**
@@ -490,6 +526,47 @@ public class ClassKit
         methodMap.put(object.getClass(), nameMethodMap);
     }
     
+    public static Field getField(Class<?> clazz, String fieldName)
+    {
+        Field foundField = getFieldFromCache(clazz, fieldName);
+        //跑100w次
+        //使用缓存前耗时：147  150  153
+        //使用缓存后耗时：35   36   37  
+        //内存缓存对性能的提升巨大！使用时间缩减到原有的20%，提升了5倍的性能！
+        if (foundField == null)
+        {
+            Class<?> _clazz = clazz;
+            for (; _clazz != Object.class; _clazz = _clazz.getSuperclass())
+            {
+                try
+                {
+                    foundField = _clazz.getDeclaredField(fieldName);
+                    //如果不报错，那么肯定就是已经获取到了，那么接下来直接break即可。
+                    //否则，报错了，肯定就是获取不到了，那么循环需要继续执行
+                    //所以，只要能执行到此处，就说明肯定已经获取成功了
+                    foundField.setAccessible(true);//让该字段可访问
+                    setFieldToCache(clazz, fieldName, foundField);
+                    break;
+                }
+                catch (Exception e)
+                {
+                }
+            }
+        }
+        if (foundField != null)
+        {
+            if (lastFieldTripleNeedOverride)
+            {
+                lastFieldTriple = new ImmutableTriple<Class<?>, String, Field>(clazz, fieldName, foundField);
+            }
+        }
+        else
+        {
+            Logs.w("无法找到字段：" + fieldName);
+        }
+        return foundField;
+    }
+    
     /**
      * 获取任意对象的任意字段值<br>
      * 可以是私有字段<br>
@@ -502,7 +579,7 @@ public class ClassKit
      * @return
      */
     @SuppressWarnings("unchecked")
-    public static <T> T getField(Object object, String fieldName, Class<T> paramClass)
+    public static <T> T getFieldValue(Object object, String fieldName)
     {
         Field foundField = getFieldFromCache(object, fieldName);
         //跑100w次
@@ -673,6 +750,11 @@ public class ClassKit
     public static Field[] getAllDeclaredFieldsDefault(Object entity)
     {
         return getAllDeclaredFieldsParentClassFirst(entity);
+    }
+    
+    public static Field[] getAllDeclaredFieldsDefault(Class<?> _clazz)
+    {
+        return getAllDeclaredFieldsParentClassFirst(_clazz);
     }
     
     /**
