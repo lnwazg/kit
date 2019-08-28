@@ -50,7 +50,7 @@ public class RemoteJarKit
             urlClassLoader = new URLClassLoader(new URL[] {url}, Thread.currentThread().getContextClassLoader());
             //每个classLoader加载出来的类都是独一无二的，都是互不相等的！
             
-            //预加载jar包中的所有class，保障加载运行主类的时候不会出错
+            //预加载jar包中的所有class，以确保加载运行主类的时候不会出错（尽可能多地将所有可能的依赖类都加载掉）
             loadJarAllClasses(urlName, urlClassLoader);
             
             return urlClassLoader.loadClass(classFullPathName);
