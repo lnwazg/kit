@@ -131,7 +131,7 @@ public class JobLoader
             Logs.i("begin to multiNodeLoadPackageJob...");
             //此时集群的job尚未启动
             //然后就写入标记，标记集群job已经启动了，因为起job本身也要花时间，所以该标记越早设置越好
-            ExecMgr.startDaemenThread(() -> {
+            ExecMgr.startThread(() -> {
                 
                 //这样做的好处是，若job节点因为故障而宕机，那么该标记也会在有限的过期时间后自动释放，集群此时可以通过一次重启来重新进行job启动节点的争夺
                 //而如果job节点正常，那么会持续不断地保持该标记，那么其余的后起的节点也会“识趣”地避免job模块被重复启动

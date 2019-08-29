@@ -60,7 +60,7 @@ public class MonitorModule
         String hostIp = IpHostUtils.getLocalHostIP();
         String macAddress = IpHostUtils.getLocalMACAddress();//查询mac地址
         
-        ExecMgr.startDaemenThread(() -> {
+        ExecMgr.startThread(() -> {
             //死循环，每次间隔指定的时间
             while (true)
             {

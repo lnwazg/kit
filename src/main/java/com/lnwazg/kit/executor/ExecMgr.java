@@ -40,7 +40,7 @@ public class ExecMgr
      */
     public static ThreadPoolExecutor trafficCtrlExec =
         new ThreadPoolExecutor(25, 500, 10, TimeUnit.SECONDS, new ArrayBlockingQueue<Runnable>(500), threadFactory, rejectionHandler);
-        
+    
     /**
      * 多线程（无上限限制）的线程池
      */
@@ -107,14 +107,13 @@ public class ExecMgr
     public static ForkJoinPool forkJoinPool = new ForkJoinPool();
     
     /**
-     * 启动一个后台线程
+     * 启动一个线程
      * @author nan.li
      * @param runnable
      */
-    public static void startDaemenThread(Runnable runnable)
+    public static void startThread(Runnable runnable)
     {
         Thread daemonThread = new Thread(runnable);
-        daemonThread.setDaemon(true);
         daemonThread.start();
     }
 }
