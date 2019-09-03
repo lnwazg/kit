@@ -1021,10 +1021,10 @@ public class ClassKit
             {
                 if (actualTypes[i] == NULL.class)
                     continue;
-                
+                    
                 if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
                     continue;
-                
+                    
                 return false;
             }
             return true;
@@ -1389,6 +1389,26 @@ public class ClassKit
         return mangleName(method, isFull);
     }
     
+    /**
+     * 根据唯一的短方法名去查找到对应的method
+     * @author nan.li
+     * @param obj
+     * @param uniqueUnfullMethodName
+     * @return
+     */
+    public static Method getMethodByUniqueUnFullMethodName(Object obj, String uniqueUnfullMethodName)
+    {
+        Method[] methods = obj.getClass().getDeclaredMethods();
+        for (Method method : methods)
+        {
+            if (uniqueUnfullMethodName.equals(getUniqueMethodName(method)))
+            {
+                return method;
+            }
+        }
+        return null;
+    }
+    
     public static String mangleName(Method method)
     {
         return mangleName(method, false);
@@ -1484,4 +1504,5 @@ public class ClassKit
                 return name;
         }
     }
+    
 }
