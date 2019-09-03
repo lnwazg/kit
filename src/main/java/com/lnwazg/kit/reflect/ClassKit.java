@@ -3,6 +3,7 @@ package com.lnwazg.kit.reflect;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
@@ -1372,4 +1373,115 @@ public class ClassKit
         return null;
     }
     
+    /**
+     * 获取方法的统一Id名称
+     * @author nan.li
+     * @param method
+     * @return
+     */
+    public static String getUniqueMethodName(Method method)
+    {
+        return getUniqueMethodName(method, false);
+    }
+    
+    public static String getUniqueMethodName(Method method, boolean isFull)
+    {
+        return mangleName(method, isFull);
+    }
+    
+    public static String mangleName(Method method)
+    {
+        return mangleName(method, false);
+    }
+    
+    /**
+     * 获得一个方法的独一无二的描述<br>
+     * 完美解决此类问题：hessian远程调用时，如何区分重载的方法？
+     * Creates a unique mangled method name based on the method name and
+     * the method parameters.
+     * @param method the method to mangle
+     * @param isFull if true, mangle the full classname 传false，则为宽松约束，配合json序列化可以获得更好的调用灵活性
+     * @return a mangled string.
+     */
+    public static String mangleName(Method method, boolean isFull)
+    {
+        StringBuffer sb = new StringBuffer();
+        sb.append(method.getName());
+        Class<?>[] params = method.getParameterTypes();
+        for (int i = 0; i < params.length; i++)
+        {
+            sb.append('_');
+            sb.append(mangleClass(params[i], isFull));
+        }
+        return sb.toString();
+    }
+    
+    /**
+     * 获取类的统一Id名称
+     * @author nan.li
+     * @param cl
+     * @return
+     */
+    public static String getUniqueClassName(Class<?> cl)
+    {
+        return getUniqueClassName(cl, false);
+    }
+    
+    public static String getUniqueClassName(Class<?> cl, boolean isFull)
+    {
+        return mangleClass(cl, isFull);
+    }
+    
+    public static String mangleClass(Class<?> cl)
+    {
+        return mangleClass(cl, false);
+    }
+    
+    /**
+     * Mangles a classname.
+     */
+    public static String mangleClass(Class<?> cl, boolean isFull)
+    {
+        String name = cl.getName();
+        if (name.equals("boolean") || name.equals("java.lang.Boolean"))
+            return "boolean";
+        else if (name.equals("int") || name.equals("java.lang.Integer")
+            || name.equals("short") || name.equals("java.lang.Short")
+            || name.equals("byte") || name.equals("java.lang.Byte"))
+            return "int";
+        else if (name.equals("long") || name.equals("java.lang.Long"))
+            return "long";
+        else if (name.equals("float") || name.equals("java.lang.Float")
+            || name.equals("double") || name.equals("java.lang.Double"))
+            return "double";
+        else if (name.equals("java.lang.String")
+            || name.equals("com.caucho.util.CharBuffer")
+            || name.equals("char") || name.equals("java.lang.Character")
+            || name.equals("java.io.Reader"))
+            return "string";
+        else if (name.equals("java.util.Date")
+            || name.equals("com.caucho.util.QDate"))
+            return "date";
+        else if (InputStream.class.isAssignableFrom(cl)
+            || name.equals("[B"))
+            return "binary";
+        else if (cl.isArray())
+        {
+            return "[" + mangleClass(cl.getComponentType(), isFull);
+        }
+        else if (name.equals("org.w3c.dom.Node")
+            || name.equals("org.w3c.dom.Element")
+            || name.equals("org.w3c.dom.Document"))
+            return "xml";
+        else if (isFull)
+            return name;
+        else
+        {
+            int p = name.lastIndexOf('.');
+            if (p > 0)
+                return name.substring(p + 1);
+            else
+                return name;
+        }
+    }
 }
