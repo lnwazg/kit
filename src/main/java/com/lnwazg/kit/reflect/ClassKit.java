@@ -116,7 +116,8 @@ public class ClassKit
     }
     
     /**
-     * 从包package中获取所有的Class 
+     * 从包package中获取所有的class<br>
+     * 不会获取子包的class
      * @author nan.li
      * @param packageName
      * @return
@@ -130,15 +131,15 @@ public class ClassKit
         //获取包的名字 并进行替换  
         String packageDirName = packageName.replace('.', '/');
         //定义一个枚举的集合 并进行循环来处理这个目录下的things  
-        Enumeration<URL> dirs;
+        Enumeration<URL> dir = null;
         try
         {
-            dirs = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
+            dir = Thread.currentThread().getContextClassLoader().getResources(packageDirName);
             //循环迭代下去  
-            while (dirs.hasMoreElements())
+            while (dir.hasMoreElements())
             {
                 //获取下一个元素  
-                URL url = dirs.nextElement();
+                URL url = dir.nextElement();
                 //得到协议的名称  
                 String protocol = url.getProtocol();
                 //如果是以文件的形式保存在服务器上  
@@ -1019,10 +1020,10 @@ public class ClassKit
             {
                 if (actualTypes[i] == NULL.class)
                     continue;
-                    
+                
                 if (wrapper(declaredTypes[i]).isAssignableFrom(wrapper(actualTypes[i])))
                     continue;
-                    
+                
                 return false;
             }
             return true;
