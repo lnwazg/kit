@@ -4,7 +4,6 @@ import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 
-import com.lnwazg.kit.date.DateUtils;
 import com.lnwazg.kit.log.Logs;
 
 /**
@@ -18,9 +17,9 @@ public abstract class PromptJob implements Job
     public void execute(JobExecutionContext context)
         throws JobExecutionException
     {
-        Logs.i(String.format("调用JOB任务【%s】在：%s", getClass().getCanonicalName(), DateUtils.getNowDateTimeStr()));
+        Logs.i(String.format("开始JOB任务【%s】", getClass().getCanonicalName()));
         executeCustom(context);
-        Logs.i(String.format("JOB任务【%s】执行完毕！", getClass().getCanonicalName()));
+        Logs.i(String.format("完成JOB任务【%s】", getClass().getCanonicalName()));
     }
     
     /**
