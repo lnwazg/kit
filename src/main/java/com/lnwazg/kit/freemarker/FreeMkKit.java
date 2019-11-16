@@ -39,8 +39,6 @@ public class FreeMkKit
         {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_25);
             configuration.setClassForTemplateLoading(paramClass, prefix);
-            //等价于下面这种方法
-            //            configuration.setTemplateLoader( new ClassTemplateLoader(paramClass,prefix));
             configuration.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_25));
             configuration.setDefaultEncoding(CharEncoding.UTF_8);
             configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
@@ -60,8 +58,6 @@ public class FreeMkKit
         {
             Configuration configuration = new Configuration(Configuration.VERSION_2_3_25);
             configuration.setClassLoaderForTemplateLoading(classLoader, prefix);
-            //等价于下面这种方法
-            //            configuration.setTemplateLoader( new ClassTemplateLoader(paramClass,prefix));
             configuration.setObjectWrapper(new DefaultObjectWrapper(Configuration.VERSION_2_3_25));
             configuration.setDefaultEncoding(CharEncoding.UTF_8);
             configuration.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
