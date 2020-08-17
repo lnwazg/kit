@@ -36,7 +36,7 @@ import com.lnwazg.kit.job.Scheduled;
  *   <!-- 定时器 -->
  *   <servlet>
  *       <servlet-name>quartzJobServlet</servlet-name>
- *       <servlet-class>com.kidswant.job.servlet.JobInitServlet</servlet-class>
+ *       <servlet-class>com.lnwazg.job.servlet.JobInitServlet</servlet-class>
  *       <load-on-startup>2</load-on-startup>
  *   </servlet>
  *   
