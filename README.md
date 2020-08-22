@@ -36,6 +36,7 @@ sqlite单线程写线程池、swing调度线程池、
 - handlerseq 一个任务串行化（顺序）处理工具
 - http 本机IP、域名、MAC地址获取，查找本机的空闲端口工具类，URL编解码，URL参数解析、URL参数提取、去参数，文件下载，GET、POST请求工具，系统代理设置工具
 - io 优雅地关闭任意对象的工具类
+- jar JarConflictCheckTool Jar包的类冲突检测工具
 - javac.in.memory 内存内代码编译器，热编译Java代码并执行
 - job
     JobInitServlet 简单的servlet形式的job执行引擎
