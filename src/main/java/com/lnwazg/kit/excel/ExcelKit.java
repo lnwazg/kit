@@ -63,7 +63,7 @@ public class ExcelKit
             //结果对象
             List<Map<String, Object>> list = new ArrayList<>();
             
-            //去除第一个sheet页面
+            //取出第一个sheet页面
             Sheet sheet = wb.getSheetAt(0);
             // 得到总行数  
             int lastRowNum = sheet.getLastRowNum();
@@ -80,7 +80,7 @@ public class ExcelKit
                 Map<String, Object> map = new HashMap<>();
                 for (int j = 0; j < columns.size(); j++)
                 {
-                    Object obj = ExcelKit.getCellFormatValue(row.getCell(j));
+                    Object obj = getCellFormatValue(row.getCell(j));
                     map.put(columns.get(j), obj);
                 }
                 list.add(map);
