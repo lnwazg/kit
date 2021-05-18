@@ -163,7 +163,7 @@
 		<dependency>
 			<groupId>com.thoughtworks.xstream</groupId>
 			<artifactId>xstream</artifactId>
-			<version>1.4.7</version>
+			<version>1.4.17</version>
 			<optional>true</optional>
 		</dependency>
 		<!-- 超强的xml解析工具 -->
